@@ -19,7 +19,7 @@ public class Dropper : MonoBehaviour
 
     int times;
     float ballCount = 0;
-    int counter = 0;
+    /*int counter = 0;*/
     List<Vector2> xCords = new List<Vector2>();
     // Start is called before the first frame update
     void Start()

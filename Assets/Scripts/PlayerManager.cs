@@ -3,13 +3,53 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerManager : MonoBehaviour
 {
     [SerializeField] GameObject previewBall;
+
+    [Header("BasePlayerStats")]
+    [SerializeField] float cooldownDuration = 5f;
+    [SerializeField] float coins = 0f;
+    [SerializeField] float ballValue = 1f;
+    [SerializeField] float ballSpeed = 50f;
+
+    float cooldownTimer = 0f;
+    PlayerInput playerInput;
     Dictionary<string, List<List<Vector2>>> ballSpawns = new Dictionary<string, List<List<Vector2>>>();
     List<string> values = new List<string> { "0.2x", "2x", "4x", "9x", "26x", "130x", "1000x" };
     // Start is called before the first frame update
+
+    private void Awake()
+    {
+        // Initialize the input actions
+        playerInput = new PlayerInput();
+    }
+
+    private void Update()
+    {
+        if(cooldownTimer > 0f)
+        {
+            cooldownTimer -= Time.deltaTime;
+        }
+    }
+
+    private void OnEnable()
+    {
+        // Enable the input actions
+        playerInput.Enable();
+
+        // Subscribe to the space bar (Jump) action
+        playerInput.Gameplay.SpawnBall.performed += SpawnBall;
+    }
+
+    private void OnDisable()
+    {
+        // Disable the input actions
+        playerInput.Disable();
+    }
+
     void Start()
     {
         foreach (string val in values)
@@ -18,12 +58,13 @@ public class PlayerManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void SpawnBall(InputAction.CallbackContext context)
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (context.performed && cooldownTimer <= 0)
         {
             GameObject newBall = Instantiate(previewBall);
-        }
+            cooldownTimer = cooldownDuration;
+        } 
     }
 
     public void GetPaths()
@@ -59,5 +100,35 @@ public class PlayerManager : MonoBehaviour
     {
         string key = values[Random.Range(0, values.Count)];
         return ballSpawns[key][Random.Range(0, ballSpawns[key].Count)];
+    }
+
+    public void AddCoins(float amount)
+    {
+        coins += amount;
+    }
+
+    public float GetCoins()
+    {
+        return coins;
+    }
+
+    public void AddValue(float amount)
+    {
+        ballValue += amount;
+    }
+
+    public float GetValue()
+    {
+        return ballValue;
+    }
+
+    public void AddSpeed(float amount)
+    {
+        ballSpeed += amount;
+    }
+
+    public float GetSpeed()
+    {
+        return ballSpeed;
     }
 }
