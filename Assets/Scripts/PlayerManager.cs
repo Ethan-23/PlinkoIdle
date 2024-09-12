@@ -33,6 +33,10 @@ public class PlayerManager : MonoBehaviour
         {
             cooldownTimer -= Time.deltaTime;
         }
+        else
+        {
+            cooldownTimer = 0f;
+        }
     }
 
     private void OnEnable()
@@ -130,5 +134,15 @@ public class PlayerManager : MonoBehaviour
     public float GetSpeed()
     {
         return ballSpeed;
+    }
+
+    public float GetCooldownDuration()
+    {
+        return cooldownDuration;
+    }
+
+    public float GetCooldownTimer()
+    {
+        return cooldownTimer;
     }
 }

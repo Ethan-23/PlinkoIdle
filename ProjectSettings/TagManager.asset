@@ -13,6 +13,7 @@ TagManager:
   - 4x
   - 2x
   - 0.2x
+  - Board
   layers:
   - Default
   - TransparentFX
