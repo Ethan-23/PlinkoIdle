@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -14,6 +17,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] float coins = 0f;
     [SerializeField] float ballValue = 1f;
     [SerializeField] float ballSpeed = 50f;
+    [SerializeField] int boardSize = 1;
 
     float cooldownTimer = 0f;
     PlayerInput playerInput;
@@ -71,18 +75,29 @@ public class PlayerManager : MonoBehaviour
         } 
     }
 
+    public string GetFilePath(string key)
+    {
+        return "/ImportantData/BoardTracks/Board" + (boardSize) + "/" + key + ".txt";
+    }
+
+    public void UpdatePaths()
+    {
+        ballSpawns.Clear();
+        //GetPaths();
+    }
+
     public void GetPaths()
     {
         List<string> keys = new List<string>();
-        foreach (string key in ballSpawns.Keys)
+        for (int i = 0; i < GetMaxMulti(); i++)
         {
-            keys.Add(key);
+            keys.Add(ballSpawns.Keys.ToList()[i]);
         }
 
         foreach (string key in keys)
         {
             //Debug.Log("GOT " + key);
-            List<string> spawnPoints = File.ReadAllLines(Application.dataPath + "/ImportantData/BallTracks/" + key + ".txt").ToList();
+            List<string> spawnPoints = File.ReadAllLines(Application.dataPath + GetFilePath(key)).ToList();
             List<List<Vector2>> spawn = new List<List<Vector2>>();
             foreach (string spawnPoint in spawnPoints)
             {
@@ -100,49 +115,92 @@ public class PlayerManager : MonoBehaviour
             ballSpawns[key] = spawn;
         }
     }
+
+    public int GetMaxMulti()
+    {
+        int max = 0;
+        if (boardSize == 1 || boardSize == 2 || boardSize == 3 || boardSize == 4)
+            max = 3;
+        else if (boardSize == 5 || boardSize == 6 || boardSize == 7 || boardSize == 8)
+            max = 4;
+        else if (boardSize == 9)
+            max = 5;
+        else if (boardSize == 10)
+            max = 6;
+        else if (boardSize == 11)
+            max = 7;
+        return max;
+    }
+
     public List<Vector2> GetRandomBallPath()
     {
-        string key = values[Random.Range(0, values.Count)];
+        int randMax = GetMaxMulti();
+        string key = values[Random.Range(0, randMax)];
         return ballSpawns[key][Random.Range(0, ballSpawns[key].Count)];
     }
 
     public void AddCoins(float amount)
     {
-        coins += amount;
+        coins = FloatAdd(coins, amount);
+    }
+
+    public void RemoveCoins(float amount)
+    {
+        coins = FloatSub(coins, amount);
+    }
+
+    float FloatAdd(float num1, float num2)
+    {
+        return (float)Math.Round(num1 + num2, 2);
+    }
+
+    float FloatSub(float num1, float num2)
+    {
+        return (float)Math.Round(num1 - num2, 2);
     }
 
     public float GetCoins()
     {
-        return coins;
+        return (float)Math.Round(coins, 2);
     }
 
     public void AddValue(float amount)
     {
-        ballValue += amount;
+        ballValue = FloatAdd(ballValue, amount);
     }
 
     public float GetValue()
     {
-        return ballValue;
+        return (float)Math.Round(ballValue, 2);
     }
 
     public void AddSpeed(float amount)
     {
-        ballSpeed += amount;
+        ballSpeed = FloatAdd(ballSpeed, amount);
     }
 
     public float GetSpeed()
     {
-        return ballSpeed;
+        return (float)Math.Round(ballSpeed, 2);
     }
 
     public float GetCooldownDuration()
     {
-        return cooldownDuration;
+        return (float)Math.Round(cooldownDuration, 2);
     }
 
     public float GetCooldownTimer()
     {
-        return cooldownTimer;
+        return (float)Math.Round(cooldownTimer, 2);
+    }
+
+    public void SetBoardSize(int size)
+    {
+        boardSize = size;
+    }
+
+    public int GetBoardSize()
+    {
+        return boardSize;
     }
 }

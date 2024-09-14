@@ -48,17 +48,6 @@ public partial class @PlayerInput: IInputActionCollection2, IDisposable
                     ""action"": ""SpawnBall"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""5255d69a-cf84-462d-9732-780e2b17f5ea"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""SpawnBall"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         }

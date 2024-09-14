@@ -31,7 +31,7 @@ public class Movement : MonoBehaviour
             rb.velocity = new Vector2(maxXSpeed, rb.velocity.y);
         }
 
-        if (rb.velocity.y == 0 && rb.velocity.x == 0 && transform.position.y != 3.25f)
+        if (rb.velocity.y == 0 && rb.velocity.x == 0 && transform.position.y != 3.2f)
             Destroy(gameObject);
 
         //kills out of bounds

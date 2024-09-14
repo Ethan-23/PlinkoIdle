@@ -9,8 +9,11 @@ using UnityEngine.Rendering;
 
 public class Dropper : MonoBehaviour
 {
-    [SerializeField] float start = 1.17f;
-    [SerializeField] float end = 1.824f;
+    [SerializeField] List<GameObject> boards = new List<GameObject>();
+    [SerializeField] int boardCount = 1;
+    [SerializeField] float start = 0;
+    [SerializeField] float end = 0;
+    [SerializeField] PlayerManager player;
     [SerializeField] bool right = true;
     [SerializeField] GameObject ball;
     [SerializeField] GameObject previewBall;
@@ -25,47 +28,55 @@ public class Dropper : MonoBehaviour
     void Start()
     {
         times = 0;
-        foreach (string val in values)
-            ballSpawns.Add(val, new List<List<Vector2>>());
         //Gets pathways from files COMMENT OUT TO RETEST BALLS
-        GetPaths();
+        //GetPaths();
     }
 
     IEnumerator ToggleBallSpawnCoroutine()
     {
-        yield return new WaitForSeconds(0.0001f);
+            yield return new WaitForSeconds(0.0001f);
 
-        transform.position = right ? new Vector3(transform.position.x + 0.0001f, transform.position.y, transform.position.z) : transform.position = new Vector3(transform.position.x - 0.0001f, transform.position.y, transform.position.z); ;
+            transform.position = right ? new Vector3(transform.position.x + 0.0001f, transform.position.y, transform.position.z) : transform.position = new Vector3(transform.position.x - 0.0001f, transform.position.y, transform.position.z); ;
 
-        if (right && transform.position.x > end)
-        {
-            right = false;
-            StartCoroutine(ToggleBallSpawnCoroutine());
-        }
-        else if (transform.position.x < start)
-        {
-            right = true;
-            times++;
-            StopCoroutine(ToggleBallSpawnCoroutine());
-        }
-        else
-        {
-            ballCount++;
-            GameObject newBall = Instantiate(ball);
-            newBall.transform.position = new Vector3(transform.position.x, 3.25f, transform.position.z);
-            StartCoroutine(ToggleBallSpawnCoroutine());
-        }
-        
+            if (right && transform.position.x > end)
+            {
+                right = false;
+                StopCoroutine(ToggleBallSpawnCoroutine());
+            }
+            /*else if (transform.position.x < start)
+            {
+                right = true;
+                times++;
+                StopCoroutine(ToggleBallSpawnCoroutine());
+            }*/
+            else
+            {
+                ballCount++;
+                GameObject newBall = Instantiate(ball);
+                newBall.transform.position = new Vector3(transform.position.x, 3.2f, transform.position.z);
+                StartCoroutine(ToggleBallSpawnCoroutine());
+            }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+
+        /*if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            ballCount++;
-            GameObject newBall = Instantiate(previewBall);
+            if(boardCount < 11)
+                boardCount++;
+            player.UpdatePaths();
+            player.SetBoardSize(boardCount);
         }
+
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            if (boardCount > 0)
+                boardCount--;
+            player.UpdatePaths();
+            player.SetBoardSize(boardCount);
+        }*/
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -78,24 +89,31 @@ public class Dropper : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.T))
         {
-            //Debug.Log("Testing Disabled for now");
+            Debug.Log("Testing Disabled for now");
             //Runs Test Balls for files
             /*transform.position = new Vector3(start, transform.position.y);
             ClearTest();
             //Clears old files
-            foreach (string val in values)
-                ClearFiles(val);
+            *//*foreach (string val in values)
+                ClearFiles(val);*//*
             StartCoroutine(ToggleBallSpawnCoroutine());*/
         }
     }
 
     public void AddPath(string tag, List<Vector2> loc)
     {
+        Debug.Log("Added " + tag);
         if (ballSpawns.ContainsKey(tag))
         {
             List<List<Vector2>> temp = ballSpawns[tag];
             temp.Add(loc);
             ballSpawns[tag] = temp;
+        }
+        else
+        {
+            List<List<Vector2>> temp = new List<List<Vector2>>();
+            temp.Add(loc);
+            ballSpawns.Add(tag, temp);
         }
     }
 
@@ -103,7 +121,7 @@ public class Dropper : MonoBehaviour
     {
         foreach (KeyValuePair<string, List<List<Vector2>>> kvp in ballSpawns)
         {
-            File.WriteAllText(Application.dataPath + "/ImportantData/BallTracks/" + kvp.Key + ".txt", "");
+            File.WriteAllText(Application.dataPath + GetFilePath(kvp.Key), "");
 
             foreach (List<Vector2> v in kvp.Value)
             {
@@ -111,17 +129,22 @@ public class Dropper : MonoBehaviour
                 Debug.Log("Printing...!");
                 foreach (Vector2 v2 in v)
                 {
-                    File.AppendAllText(Application.dataPath + "/ImportantData/BallTracks/" + kvp.Key + ".txt", v2.x + "," + v2.y + "*");
+                    File.AppendAllText(Application.dataPath + GetFilePath(kvp.Key), v2.x + "," + v2.y + "*");
                 }
-                File.AppendAllText(Application.dataPath + "/ImportantData/BallTracks/" + kvp.Key + ".txt", "\n");
+                File.AppendAllText(Application.dataPath + GetFilePath(kvp.Key), "\n");
             }
 
         }
     }
 
-    public void ClearFiles(string tag)
+    public string GetFilePath(string key)
     {
-        File.WriteAllText(Application.dataPath + "/ImportantData/BallTracks/" + tag + ".txt", "");
+        return "/ImportantData/BoardTracks/Board" + (boardCount) + "/" + key + ".txt";
+    }
+
+    public void ClearFiles(string key)
+    {
+        File.WriteAllText(Application.dataPath + GetFilePath(key), "");
     }
 
     public void GetPaths()
@@ -135,7 +158,7 @@ public class Dropper : MonoBehaviour
         foreach (string key in keys)
         {
             //Debug.Log("GOT " + key);
-            List<string> spawnPoints = File.ReadAllLines(Application.dataPath + "/ImportantData/BallTracks/" + key + ".txt").ToList();
+            List<string> spawnPoints = File.ReadAllLines(Application.dataPath + GetFilePath(key)).ToList();
             List<List<Vector2>> spawn = new List<List<Vector2>>();
             foreach (string spawnPoint in spawnPoints)
             {
@@ -150,12 +173,21 @@ public class Dropper : MonoBehaviour
                 }
                 spawn.Add(v);
             }
-            ballSpawns[key] = spawn;
+            if (ballSpawns.ContainsKey(key))
+            {
+                ballSpawns[key] = spawn;
+            }
+            else
+            {
+                ballSpawns.Add(key, spawn);
+            }
+            
         }
     }
 
     public List<Vector2> GetRandomBallPath()
     {
+        //Get keys from dict not list UPDATE THIS NOOB
         string key = values[Random.Range(0, values.Count)];
         return ballSpawns[key][Random.Range(0, ballSpawns[key].Count)];
     }
@@ -164,5 +196,6 @@ public class Dropper : MonoBehaviour
     {
         ballCount = 0;
         times = 0;
+        ballSpawns.Clear();
     }
 }
