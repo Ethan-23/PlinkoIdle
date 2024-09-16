@@ -13,142 +13,131 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] GameObject previewBall;
 
     [Header("BasePlayerStats")]
-    [SerializeField] float cooldownDuration = 5f;
     [SerializeField] float coins = 0f;
-    [SerializeField] float ballValue = 1f;
-    [SerializeField] float ballSpeed = 50f;
+    [SerializeField] float baseCooldownDuration = 2f;
+    [SerializeField] float baseBallSpeed = 50f;
+
+    [Header("Upgrades:")]
+    [Header("Ball")]
+    [SerializeField] int cooldownUpgrade = 0;
+    [SerializeField] int ballSpeedUpgrade = 0;
+    [SerializeField] int specialBallUpgrade = 0;
+    [Header("Bonkers")]
+    [SerializeField] int bonkerValueUpgrade = 0;
+    [SerializeField] int glowingBonkersUpgrade = 0;
+    [Header("Bots")]
+    [Header("Misc")]
     [SerializeField] int boardSize = 1;
 
-    float cooldownTimer = 0f;
-    PlayerInput playerInput;
-    Dictionary<string, List<List<Vector2>>> ballSpawns = new Dictionary<string, List<List<Vector2>>>();
-    List<string> values = new List<string> { "0.2x", "2x", "4x", "9x", "26x", "130x", "1000x" };
+    [SerializeField] Upgrades upgrades;
+    [SerializeField] BallController ballController;
+    
+    
     // Start is called before the first frame update
 
     private void Awake()
     {
         // Initialize the input actions
-        playerInput = new PlayerInput();
     }
 
-    private void Update()
+
+    //Coin Functions
+    public float GetCoins()
     {
-        if(cooldownTimer > 0f)
-        {
-            cooldownTimer -= Time.deltaTime;
-        }
-        else
-        {
-            cooldownTimer = 0f;
-        }
+        return (float)Math.Round(coins, 2);
     }
-
-    private void OnEnable()
-    {
-        // Enable the input actions
-        playerInput.Enable();
-
-        // Subscribe to the space bar (Jump) action
-        playerInput.Gameplay.SpawnBall.performed += SpawnBall;
-    }
-
-    private void OnDisable()
-    {
-        // Disable the input actions
-        playerInput.Disable();
-    }
-
-    void Start()
-    {
-        foreach (string val in values)
-            ballSpawns.Add(val, new List<List<Vector2>>());
-        GetPaths();
-    }
-
-    // Update is called once per frame
-    private void SpawnBall(InputAction.CallbackContext context)
-    {
-        if (context.performed && cooldownTimer <= 0)
-        {
-            GameObject newBall = Instantiate(previewBall);
-            cooldownTimer = cooldownDuration;
-        } 
-    }
-
-    public string GetFilePath(string key)
-    {
-        return "/ImportantData/BoardTracks/Board" + (boardSize) + "/" + key + ".txt";
-    }
-
-    public void UpdatePaths()
-    {
-        ballSpawns.Clear();
-        //GetPaths();
-    }
-
-    public void GetPaths()
-    {
-        List<string> keys = new List<string>();
-        for (int i = 0; i < GetMaxMulti(); i++)
-        {
-            keys.Add(ballSpawns.Keys.ToList()[i]);
-        }
-
-        foreach (string key in keys)
-        {
-            //Debug.Log("GOT " + key);
-            List<string> spawnPoints = File.ReadAllLines(Application.dataPath + GetFilePath(key)).ToList();
-            List<List<Vector2>> spawn = new List<List<Vector2>>();
-            foreach (string spawnPoint in spawnPoints)
-            {
-                List<Vector2> v = new List<Vector2>();
-                List<string> cords = spawnPoint.Split('*').ToList();
-                foreach (string c in cords)
-                {
-                    if (c == "")
-                        continue;
-                    List<string> vectors = c.Split(",").ToList();
-                    v.Add(new Vector2(float.Parse(vectors[0]), float.Parse(vectors[1])));
-                }
-                spawn.Add(v);
-            }
-            ballSpawns[key] = spawn;
-        }
-    }
-
-    public int GetMaxMulti()
-    {
-        int max = 0;
-        if (boardSize == 1 || boardSize == 2 || boardSize == 3 || boardSize == 4)
-            max = 3;
-        else if (boardSize == 5 || boardSize == 6 || boardSize == 7 || boardSize == 8)
-            max = 4;
-        else if (boardSize == 9)
-            max = 5;
-        else if (boardSize == 10)
-            max = 6;
-        else if (boardSize == 11)
-            max = 7;
-        return max;
-    }
-
-    public List<Vector2> GetRandomBallPath()
-    {
-        int randMax = GetMaxMulti();
-        string key = values[Random.Range(0, randMax)];
-        return ballSpawns[key][Random.Range(0, ballSpawns[key].Count)];
-    }
-
     public void AddCoins(float amount)
     {
         coins = FloatAdd(coins, amount);
     }
-
     public void RemoveCoins(float amount)
     {
         coins = FloatSub(coins, amount);
     }
 
+
+    //Speed Functions
+    public int GetSpeed()
+    {
+        return ballSpeedUpgrade;
+    }
+    public void SetSpeed(int amount)
+    {
+        ballSpeedUpgrade = amount;
+    }
+    public void AddSpeed(int amount)
+    {
+        ballSpeedUpgrade += amount;
+    }
+
+    //BonkerValue Functions
+    public int GetBonkerUpgrade()
+    {
+        return bonkerValueUpgrade;
+    }
+    public void AddBonkerUpgrade(int amount)
+    {
+        bonkerValueUpgrade += amount;
+    }
+    public void SetBonkerUpgrade(int amount)
+    {
+        bonkerValueUpgrade = amount;
+    }
+
+    //GlowingBonker Functions
+    public int GetGlowingBonkerUpgrade()
+    {
+        return glowingBonkersUpgrade;
+    }
+    public void AddGlowingBonkerUpgrade(int amount)
+    {
+        glowingBonkersUpgrade += amount;
+    }
+    public void SetGlowingBonkerUpgrade(int amount)
+    {
+        glowingBonkersUpgrade = amount;
+    }
+
+
+    //SpecialBall Functions
+    public int GetSpecialBallUpgrade()
+    {
+        return specialBallUpgrade;
+    }
+
+    //Base Functions
+    public float GetBaseSpeed()
+    {
+        return baseBallSpeed;
+    }
+
+    public float GetBaseCooldownDuration()
+    {
+        return baseCooldownDuration;
+    }
+
+    public int GetCooldownUpgrade()
+    {
+        return cooldownUpgrade;
+    }
+
+    
+
+    //Board Size
+    public void SetBoardSize(int size)
+    {
+        boardSize = size;
+    }
+    public void AddBoardSize(int size)
+    {
+        boardSize += size;
+    }
+    public int GetBoardSize()
+    {
+        return boardSize;
+    }
+
+    //Allow for floats to round to 2nd decimal to prevent 0.9999999
     float FloatAdd(float num1, float num2)
     {
         return (float)Math.Round(num1 + num2, 2);
@@ -159,48 +148,14 @@ public class PlayerManager : MonoBehaviour
         return (float)Math.Round(num1 - num2, 2);
     }
 
-    public float GetCoins()
+    public Upgrades GetUpgrades()
     {
-        return (float)Math.Round(coins, 2);
+        return upgrades;
     }
 
-    public void AddValue(float amount)
+    public BallController GetBallController()
     {
-        ballValue = FloatAdd(ballValue, amount);
+        return ballController;
     }
 
-    public float GetValue()
-    {
-        return (float)Math.Round(ballValue, 2);
-    }
-
-    public void AddSpeed(float amount)
-    {
-        ballSpeed = FloatAdd(ballSpeed, amount);
-    }
-
-    public float GetSpeed()
-    {
-        return (float)Math.Round(ballSpeed, 2);
-    }
-
-    public float GetCooldownDuration()
-    {
-        return (float)Math.Round(cooldownDuration, 2);
-    }
-
-    public float GetCooldownTimer()
-    {
-        return (float)Math.Round(cooldownTimer, 2);
-    }
-
-    public void SetBoardSize(int size)
-    {
-        boardSize = size;
-    }
-
-    public int GetBoardSize()
-    {
-        return boardSize;
-    }
 }

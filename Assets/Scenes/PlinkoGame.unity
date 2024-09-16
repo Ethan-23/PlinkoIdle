@@ -217,6 +217,7 @@ GameObject:
   m_Component:
   - component: {fileID: 441288950}
   - component: {fileID: 441288949}
+  - component: {fileID: 441288951}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -237,11 +238,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   previewBall: {fileID: 6992664924018148205, guid: f4173e6d936e08a44b93f007bd9b821a, type: 3}
-  cooldownDuration: 2
   coins: 0
-  ballValue: 1
-  ballSpeed: 50
+  baseCooldownDuration: 2
+  baseBallSpeed: 50
+  cooldownUpgrade: 0
+  ballSpeedUpgrade: 0
+  specialBallUpgrade: 0
+  bonkerValueUpgrade: 0
+  glowingBonkersUpgrade: 0
   boardSize: 1
+  upgrades: {fileID: 441288951}
+  ballController: {fileID: 2017580283}
 --- !u!4 &441288950
 Transform:
   m_ObjectHideFlags: 0
@@ -257,6 +264,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &441288951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 441288948}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a97792eabda0d5f4da5d31a5748b9f76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ball: {fileID: 6992664924018148205, guid: f4173e6d936e08a44b93f007bd9b821a, type: 3}
+  uncommonBall: {fileID: 6992664924018148205, guid: 04fe8a81378143a429a0f288837c60ff, type: 3}
+  rareBall: {fileID: 6992664924018148205, guid: 0f7a9a41315db6d42aed50e10fe862a5, type: 3}
+  epicBall: {fileID: 6992664924018148205, guid: 34c00e592673353488240edcac32db45, type: 3}
+  mythicalBall: {fileID: 6992664924018148205, guid: 4f73c0bc50a404540b9423563a9c8219, type: 3}
+  legendaryBall: {fileID: 6992664924018148205, guid: 821a5ca7a11d8c948b9675e1f3147876, type: 3}
+  glowingTimer: 0
 --- !u!1 &453646654
 GameObject:
   m_ObjectHideFlags: 0
@@ -429,6 +455,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slider: {fileID: 546374551}
   player: {fileID: 441288949}
+  upgrades: {fileID: 441288951}
+  ballController: {fileID: 2017580283}
 --- !u!114 &546374551
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1420,6 +1448,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 544897063}
   m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2017580282
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2017580284}
+  - component: {fileID: 2017580283}
+  m_Layer: 0
+  m_Name: BallController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2017580283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2017580282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 619e32fdb16993c4eba8937533b2c5d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cooldownTimer: 0
+--- !u!4 &2017580284
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2017580282}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2057771405
 GameObject:

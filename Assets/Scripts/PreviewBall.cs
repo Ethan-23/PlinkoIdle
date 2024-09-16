@@ -9,8 +9,8 @@ public class PreviewBall : MonoBehaviour
     List<Vector2> path = new List<Vector2>();
     int currentIndex = 0;
 
-    [SerializeField] float speed;
-    [SerializeField] float ballValue;
+    float speed;
+    [SerializeField] float ballValue = 1;
 
     PlayerManager playerManager;
     List<string> multis = new List<string> { "0.2x", "2x", "4x", "9x", "26x", "130x", "1000x" };
@@ -20,13 +20,21 @@ public class PreviewBall : MonoBehaviour
     {
         //Get values of outside variables
         playerManager = GameObject.Find("Player").GetComponent<PlayerManager>();
-        ballValue = playerManager.GetValue();
-        speed = playerManager.GetSpeed();
-        path = playerManager.GetRandomBallPath();
+        speed = playerManager.GetBaseSpeed();
+        path = playerManager.GetBallController().GetRandomBallPath();
         
         //Start position
         transform.position = path[0];
         /*StartCoroutine(FollowPath());*/
+    }
+
+    public void SetBallValue(float amount)
+    {
+        ballValue = amount;
+    }
+    public float GetBallValue()
+    {
+        return ballValue;
     }
 
     /*IEnumerator FollowPath()
