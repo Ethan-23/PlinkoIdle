@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PreviewBall : MonoBehaviour
@@ -13,6 +14,7 @@ public class PreviewBall : MonoBehaviour
     [SerializeField] float ballValue = 1;
 
     PlayerManager playerManager;
+    UIScoreDisplay scoreDisplay;
     List<string> multis = new List<string> { "0.2x", "2x", "4x", "9x", "26x", "130x", "1000x" };
     
     // Start is called before the first frame update
@@ -20,6 +22,7 @@ public class PreviewBall : MonoBehaviour
     {
         //Get values of outside variables
         playerManager = GameObject.Find("Player").GetComponent<PlayerManager>();
+        scoreDisplay = GameObject.Find("ScoreTextDisplay").GetComponent<UIScoreDisplay>();
         speed = playerManager.GetBaseSpeed();
         path = playerManager.GetBallController().GetRandomBallPath();
         
@@ -76,7 +79,9 @@ public class PreviewBall : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collider)
     {
         if(multis.Contains(collider.tag)) {
-            playerManager.AddCoins(ballValue * float.Parse(collider.tag.Substring(0, collider.tag.Length - 1)));
+            float amount = ballValue * float.Parse(collider.tag.Substring(0, collider.tag.Length - 1));
+            playerManager.AddCoins(amount);
+            scoreDisplay.ShowPointGain(transform.position, amount);
             Destroy(gameObject);
         }
         

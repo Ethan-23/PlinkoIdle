@@ -86,12 +86,12 @@ public class Upgrades : MonoBehaviour
         {
             return (level * 0.01f + GetGlowingMulti()) * ballValue;
         }
-        return level * 0.01f * ballValue;
+        return (0.1f + (level * 0.001f)) * ballValue;
     }
 
     float GetGlowingMulti()
     {
-        return 0.1f * playerManager.GetGlowingBonkerUpgrade();
+        return 0.001f * playerManager.GetGlowingBonkerUpgrade();
     }
 
     void BonkerGlow(int amount)
