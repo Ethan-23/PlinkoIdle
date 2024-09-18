@@ -9,7 +9,7 @@ public class BonkerCollision : MonoBehaviour
     UIScoreDisplay scoreDisplay;
     [SerializeField] bool glowing = false;
     
-    public void Awake()
+    public void Start()
     {
         playerManager = GameObject.Find("Player").GetComponent<PlayerManager>();
         upgrades = playerManager.GetUpgrades();
@@ -23,8 +23,8 @@ public class BonkerCollision : MonoBehaviour
         {
             GameObject ball = collision.gameObject;
             transform.gameObject.GetComponent<ParticleSystem>().Play();
-            upgrades.RemoveBonker(gameObject);
             float gain = upgrades.GetBonkerValue(ball.GetComponent<PreviewBall>().GetBallValue(), glowing);
+            upgrades.RemoveBonker(gameObject);
             playerManager.AddCoins(gain);
             scoreDisplay.ShowPointGain(ball.transform.position, gain);
         }

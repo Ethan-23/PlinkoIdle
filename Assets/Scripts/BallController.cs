@@ -4,21 +4,33 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class BallController : MonoBehaviour
 {
     [SerializeField] float cooldownTimer = 0f;
-    PlayerManager playerManager;
+    [SerializeField] Slider autoSlider;
+    [SerializeField] float autoCooldownTimer = 0f;
+    [SerializeField] float autoDropBaseCooldown = 4f;
+    [SerializeField] PlayerManager playerManager;
     Upgrades upgrades;
     PlayerInput playerInput;
     Dictionary<string, List<List<Vector2>>> ballSpawns = new Dictionary<string, List<List<Vector2>>>();
     List<string> values = new List<string> { "0.2x", "2x", "4x", "9x", "26x", "130x", "1000x" };
     // Start is called before the first frame update
+
     private void Awake()
     {
         playerInput = new PlayerInput();
-        playerManager = GameObject.Find("Player").GetComponent<PlayerManager>();
+        foreach (string val in values)
+            ballSpawns.Add(val, new List<List<Vector2>>());
+    }
+
+    private void Start()
+    {
+        GetPaths();
         upgrades = playerManager.GetUpgrades();
+        autoCooldownTimer = playerManager.GetBaseAutoCooldownDuration();
     }
 
     // Update is called once per frame
@@ -32,6 +44,19 @@ public class BallController : MonoBehaviour
         {
             cooldownTimer = 0f;
         }
+
+        if (playerManager.GetAutoDrop() == true && autoCooldownTimer > 0f)
+        {
+            autoCooldownTimer -= Time.deltaTime;
+        }
+        else if(playerManager.GetAutoDrop() == true)
+        {
+            SpawnBall();
+        }
+        else
+        {
+            autoCooldownTimer = upgrades.GetAutoCooldown();
+        }
     }
 
     private void OnEnable()
@@ -40,7 +65,7 @@ public class BallController : MonoBehaviour
         playerInput.Enable();
 
         // Subscribe to the space bar (Jump) action
-        playerInput.Gameplay.SpawnBall.performed += SpawnBall;
+        playerInput.Gameplay.SpawnBall.performed += SpawnBallAction;
     }
 
     private void OnDisable()
@@ -49,22 +74,24 @@ public class BallController : MonoBehaviour
         playerInput.Disable();
     }
 
-    void Start()
-    {
-        foreach (string val in values)
-            ballSpawns.Add(val, new List<List<Vector2>>());
-        GetPaths();
-    }
-
     // Update is called once per frame
-    private void SpawnBall(InputAction.CallbackContext context)
+    private void SpawnBallAction(InputAction.CallbackContext context)
     {
         if (context.performed && cooldownTimer <= 0)
         {
-            Instantiate(upgrades.GetSpawningBall());
-
-            cooldownTimer = upgrades.GetCooldown();
+            playerManager.SetAutoDrop(false);
+            if (autoSlider.IsActive())
+                autoSlider.gameObject.SetActive(false);
+            SpawnBall();
         }
+    }
+
+    void SpawnBall()
+    {
+        Instantiate(upgrades.GetSpawningBall());
+
+        cooldownTimer = upgrades.GetCooldown();
+        autoCooldownTimer = upgrades.GetAutoCooldown();
     }
 
     public string GetFilePath(string key)
@@ -135,4 +162,11 @@ public class BallController : MonoBehaviour
     {
         return cooldownTimer;
     }
+
+    public float GetAutoCooldownTimer()
+    {
+        return autoCooldownTimer;
+    }
+
+
 }

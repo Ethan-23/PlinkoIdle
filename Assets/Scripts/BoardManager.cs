@@ -15,7 +15,7 @@ public class BoardManager : MonoBehaviour
         player = GameObject.Find("Player").GetComponent<PlayerManager>();
         if(player.GetBoardSize() == 1)
         {
-            mainCamera.transform.position = new Vector3 (mainCamera.transform.position.x, 1.4f, mainCamera.transform.position.z);
+            mainCamera.transform.position = new Vector3 (0.7f, 1.8f, mainCamera.transform.position.z);
             mainCamera.GetComponent<Camera>().orthographicSize = 2;
         }
         Instantiate(boards[player.GetBoardSize() - 1]);

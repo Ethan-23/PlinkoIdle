@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DropSlider : MonoBehaviour
+public class AutoDropSlider : MonoBehaviour
 {
     [SerializeField] Slider slider;
     [SerializeField] PlayerManager player;
@@ -12,16 +12,16 @@ public class DropSlider : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        slider.gameObject.SetActive(false);
         slider = GetComponent<Slider>();
-        slider.maxValue = player.GetBaseCooldownDuration();
+        slider.maxValue = player.GetBaseAutoCooldownDuration();
         slider.value = slider.maxValue;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log(player.GetCooldownTimer());
-        slider.maxValue = upgrades.GetCooldown();
-        slider.value = upgrades.GetCooldown() - ballController.GetCooldownTimer();
+        slider.maxValue = upgrades.GetAutoCooldown();
+        slider.value = upgrades.GetAutoCooldown() - ballController.GetAutoCooldownTimer();
     }
 }

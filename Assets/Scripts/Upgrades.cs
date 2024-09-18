@@ -14,14 +14,22 @@ public class Upgrades : MonoBehaviour
     [SerializeField] GameObject legendaryBall;
     PlayerManager playerManager;
     [SerializeField] float glowingTimer = 300f;
+    [Header("Upgrade Options")]
+    [SerializeField] float glowingTimerCooldown = 300f;
+    [SerializeField] float glowingMultiUpgradeValue = 0.01f;
+    [SerializeField] float bonkerMultiUpgradeValue = 0.01f;
     List<GameObject> glowing = new List<GameObject>();
+
+    private void Awake()
+    {
+        playerManager = GetComponent<PlayerManager>();
+    }
 
     void Start()
     {
-        playerManager = GetComponent<PlayerManager>();
         if(playerManager.GetGlowingBonkerUpgrade() >= 1)
         {
-            glowingTimer = 300f;
+            glowingTimer = glowingTimerCooldown;
             BonkerGlow(playerManager.GetGlowingBonkerUpgrade() / 10 + 1);
             //ResetBonkers();
         }
@@ -60,7 +68,22 @@ public class Upgrades : MonoBehaviour
 
     public float GetCooldown()
     {
+        if (playerManager == null)
+        {
+            Debug.LogError("PlayerManager is not assigned or missing in the scene!");
+            return 0f; // Fallback value
+        }
         return playerManager.GetBaseCooldownDuration() - (playerManager.GetCooldownUpgrade() * 0.01f);
+    }
+    
+    public float GetAutoCooldown()
+    {
+        if (playerManager == null)
+        {
+            Debug.LogError("PlayerManager is not assigned or missing in the scene!");
+            return 0f; // Fallback value
+        }
+        return playerManager.GetBaseAutoCooldownDuration() - (playerManager.GetCooldownUpgrade() * 0.01f);
     }
 
     void BonkerCooldown()
@@ -73,7 +96,7 @@ public class Upgrades : MonoBehaviour
         }
         else
         {
-            glowingTimer = 300f;
+            glowingTimer = glowingTimerCooldown;
             BonkerGlow(playerManager.GetGlowingBonkerUpgrade() / 10 + 1);
             //ResetBonkers();
         }
@@ -84,14 +107,14 @@ public class Upgrades : MonoBehaviour
         int level = (playerManager.GetBonkerUpgrade() + 1);
         if (isGlowing)
         {
-            return (level * 0.01f + GetGlowingMulti()) * ballValue;
+            return (0.1f + (level * bonkerMultiUpgradeValue + GetGlowingMulti())) * ballValue;
         }
-        return (0.1f + (level * 0.001f)) * ballValue;
+        return (0.1f + (level * bonkerMultiUpgradeValue)) * ballValue;
     }
 
     float GetGlowingMulti()
     {
-        return 0.001f * playerManager.GetGlowingBonkerUpgrade();
+        return 0.01f * playerManager.GetGlowingBonkerUpgrade();
     }
 
     void BonkerGlow(int amount)

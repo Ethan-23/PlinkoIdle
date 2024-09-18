@@ -1,108 +1,181 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using Random = UnityEngine.Random;
 
 public class PlayerManager : MonoBehaviour
 {
-    [SerializeField] GameObject previewBall;
 
-    [Header("BasePlayerStats")]
-    [SerializeField] float coins = 0f;
+    //Base stats 
+    [Header("BaseStats")]
     [SerializeField] float baseCooldownDuration = 2f;
+    [SerializeField] float BaseAutoCooldownDuration = 4f;
     [SerializeField] float baseBallSpeed = 50f;
+    [SerializeField] bool autoDrop = false;
+    
 
-    [Header("Upgrades:")]
-    [Header("Ball")]
-    [SerializeField] int cooldownUpgrade = 0;
-    [SerializeField] int ballSpeedUpgrade = 0;
-    [SerializeField] int specialBallUpgrade = 0;
-    [Header("Bonkers")]
-    [SerializeField] int bonkerValueUpgrade = 0;
-    [SerializeField] int glowingBonkersUpgrade = 0;
-    [Header("Bots")]
-    [Header("Misc")]
-    [SerializeField] int boardSize = 1;
+    [SerializeField] Player player;
 
+    [Header("Objects")]
+    [SerializeField] GameObject previewBall;
     [SerializeField] Upgrades upgrades;
     [SerializeField] BallController ballController;
-    
-    
+
     // Start is called before the first frame update
 
     private void Awake()
     {
-        // Initialize the input actions
+        player = new Player();
+        player.Coins = 0;
+    }
+
+    public void Start()
+    {
+        LoadPlayerData();
+    }
+
+    public void OnApplicationQuit()
+    {
+        SavePlayerData();
+    }
+
+    public void SavePlayerData()
+    {
+        if (player == null)
+        {
+            Debug.LogWarning("Player instance is null, cannot save data.");
+            return;
+        }
+
+        try
+        {
+            string json = JsonUtility.ToJson(player);
+            string path = Application.persistentDataPath + "/playerData.json";
+            System.IO.File.WriteAllText(path, json);
+            Debug.Log("Player data saved to " + path);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Failed to save player data: " + ex.Message);
+        }
+    }
+
+    public void LoadPlayerData()
+    {
+        string path = Application.persistentDataPath + "/playerData.json";
+
+        if (!System.IO.File.Exists(path))
+        {
+            Debug.LogWarning("Player data file does not exist. Initializing default player.");
+            player = new Player(); // Initialize default player if file is missing
+            return;
+        }
+
+        try
+        {
+            string json = System.IO.File.ReadAllText(path);
+            player = JsonUtility.FromJson<Player>(json);
+
+            if (player == null)
+            {
+                Debug.LogWarning("Failed to deserialize player data. Initializing default player.");
+                player = new Player(); // Initialize default player if deserialization fails
+            }
+            else
+            {
+                Debug.Log("Player data loaded from " + path);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Failed to load player data: " + ex.Message);
+            player = new Player(); // Initialize default player on error
+        }
     }
 
 
     //Coin Functions
     public float GetCoins()
     {
-        return (float)Math.Round(coins, 2);
+        return (float)Math.Round(player.Coins, 2);
     }
     public void AddCoins(float amount)
     {
-        coins = FloatAdd(coins, amount);
+        player.Coins = FloatAdd(player.Coins, amount);
     }
     public void RemoveCoins(float amount)
     {
-        coins = FloatSub(coins, amount);
+        player.Coins = FloatSub(player.Coins, amount);
     }
 
 
     //Speed Functions
     public int GetSpeed()
     {
-        return ballSpeedUpgrade;
+        return player.BallSpeedUpgrade;
     }
     public void SetSpeed(int amount)
     {
-        ballSpeedUpgrade = amount;
+        player.BallSpeedUpgrade = amount;
     }
     public void AddSpeed(int amount)
     {
-        ballSpeedUpgrade += amount;
+        player.BallSpeedUpgrade += amount;
     }
 
     //BonkerValue Functions
     public int GetBonkerUpgrade()
     {
-        return bonkerValueUpgrade;
+        return player.BonkerValueUpgrade;
     }
     public void AddBonkerUpgrade(int amount)
     {
-        bonkerValueUpgrade += amount;
+        player.BonkerValueUpgrade += amount;
     }
     public void SetBonkerUpgrade(int amount)
     {
-        bonkerValueUpgrade = amount;
+        player.BonkerValueUpgrade = amount;
     }
 
     //GlowingBonker Functions
     public int GetGlowingBonkerUpgrade()
     {
-        return glowingBonkersUpgrade;
+        return player.GlowingBonkersUpgrade;
     }
     public void AddGlowingBonkerUpgrade(int amount)
     {
-        glowingBonkersUpgrade += amount;
+        player.GlowingBonkersUpgrade += amount;
     }
     public void SetGlowingBonkerUpgrade(int amount)
     {
-        glowingBonkersUpgrade = amount;
+        player.GlowingBonkersUpgrade = amount;
     }
 
 
     //SpecialBall Functions
     public int GetSpecialBallUpgrade()
     {
-        return specialBallUpgrade;
+        return player.SpecialBallUpgrade;
+    }
+    public void AddSpecialBallUpgrade(int amount)
+    {
+        player.SpecialBallUpgrade += amount;
+    }
+    public void SetSpecialBallUpgrade(int amount)
+    {
+        player.SpecialBallUpgrade = amount;
+    }
+
+    //Cooldown Functions
+    public int GetCooldownUpgrade()
+    {
+        return player.CooldownUpgrade;
+    }
+    public void AddCooldownUpgrade(int amount)
+    {
+        player.CooldownUpgrade += amount;
+    }
+    public void SetCooldownUpgrade(int amount)
+    {
+        player.CooldownUpgrade = amount;
     }
 
     //Base Functions
@@ -115,26 +188,34 @@ public class PlayerManager : MonoBehaviour
     {
         return baseCooldownDuration;
     }
-
-    public int GetCooldownUpgrade()
+    
+    public float GetBaseAutoCooldownDuration()
     {
-        return cooldownUpgrade;
+        return BaseAutoCooldownDuration;
     }
 
-    
+    public bool GetAutoDrop()
+    {
+        return autoDrop;
+    }
+
+    public void SetAutoDrop(bool mode)
+    {
+        autoDrop = mode;
+    }
 
     //Board Size
     public void SetBoardSize(int size)
     {
-        boardSize = size;
+        player.BoardSize = size;
     }
     public void AddBoardSize(int size)
     {
-        boardSize += size;
+        player.BoardSize += size;
     }
     public int GetBoardSize()
     {
-        return boardSize;
+        return player.BoardSize;
     }
 
     //Allow for floats to round to 2nd decimal to prevent 0.9999999
