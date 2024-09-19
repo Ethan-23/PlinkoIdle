@@ -24,9 +24,12 @@ public class BonkerCollision : MonoBehaviour
             GameObject ball = collision.gameObject;
             transform.gameObject.GetComponent<ParticleSystem>().Play();
             float gain = upgrades.GetBonkerValue(ball.GetComponent<PreviewBall>().GetBallValue(), glowing);
+            collision.gameObject.GetComponent<PreviewBall>().HitBonker(glowing);
             upgrades.RemoveBonker(gameObject);
             playerManager.AddCoins(gain);
             scoreDisplay.ShowPointGain(ball.transform.position, gain);
+
+            
         }
     }
 

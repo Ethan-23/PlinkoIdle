@@ -7,6 +7,8 @@ public class ShopManager : MonoBehaviour
     [SerializeField] PlayerManager player;
     [SerializeField] TextMeshProUGUI coinText;
 
+    [SerializeField] TextMeshProUGUI ballValueCost;
+    [SerializeField] TextMeshProUGUI ballValueAmount;
     [SerializeField] TextMeshProUGUI ballCooldownCost;
     [SerializeField] TextMeshProUGUI ballCooldownAmount;
     [SerializeField] TextMeshProUGUI specialBallCost;
@@ -30,6 +32,8 @@ public class ShopManager : MonoBehaviour
     void UpdateText()
     {
         coinText.text = "Coins: " + player.GetCoins().ToString();
+        ballValueCost.text = "Cost: " + CalculateBallValueCost().ToString();
+        ballValueAmount.text = player.GetBallValueUpgrade().ToString();
         ballCooldownCost.text = "Cost: " + CalculateBallCooldownCost().ToString();
         ballCooldownAmount.text = player.GetCooldownUpgrade().ToString();
         specialBallCost.text = "Cost: " + CalculateSpecialBallCost().ToString();
@@ -38,6 +42,20 @@ public class ShopManager : MonoBehaviour
         bonkerMultiAmount.text = player.GetBonkerUpgrade().ToString();
         glowingBonkerCost.text = "Cost: " + CalculateGlowingBonkers().ToString();
         glowingBonkerAmount.text = player.GetGlowingBonkerUpgrade().ToString();
+    }
+
+    public float CalculateBallValueCost()
+    {
+        return (float)Math.Round(10 * Math.Pow(1.07f, player.GetBallValueUpgrade()), 2);
+    }
+
+    public void PurchaseBallValue()
+    {
+        if (player.GetCoins() < CalculateBallValueCost())
+            return;
+        player.RemoveCoins(CalculateBallValueCost());
+        player.AddBallValueUpgrade(1);
+        UpdateText();
     }
 
     public float CalculateBallCooldownCost()

@@ -23,9 +23,10 @@ public class Player
     [SerializeField] int cooldownUpgrade = 0;
     [SerializeField] int ballSpeedUpgrade = 0;
     [SerializeField] int specialBallUpgrade = 0;
+    [SerializeField] int ballValueUpgrade = 0;
 
     [Header("Bonkers")]
-    [SerializeField] int bonkerValueUpgrade = 0;
+    [SerializeField] int bonkerValueUpgrade = 0; // Does not multiply unless special ball
     [SerializeField] int glowingBonkersUpgrade = 0;
 
     [Header("Robots")]
@@ -43,6 +44,12 @@ public class Player
     {
         get { return cooldownUpgrade; }
         set { cooldownUpgrade = value; }
+    }
+
+    public int BallValueUpgrade
+    {
+        get { return ballValueUpgrade; }
+        set { ballValueUpgrade = value; }
     }
 
     public int BallSpeedUpgrade

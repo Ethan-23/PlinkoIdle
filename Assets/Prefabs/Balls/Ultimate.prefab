@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8881391991891545300}
   - component: {fileID: 8961021557536442538}
   m_Layer: 3
-  m_Name: Mythic
+  m_Name: Ultimate
   m_TagString: Ball
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -77,7 +77,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0.8962264, g: 0.3914112, b: 0, a: 1}
+  m_Color: {r: 0.8980392, g: 0.89482856, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -161,4 +161,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45adac4be44f3884b919f57c47eac9b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ballValue: 2
+  baseBallValue: 1

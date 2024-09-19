@@ -164,4 +164,10 @@ public class Upgrades : MonoBehaviour
             glowing.Remove(bonker);
         bonker.GetComponent<BonkerCollision>().SetGlowing(false);
     }
+
+    public float GetBallValue()
+    {
+        //base value + upgrade * 0.1
+        return 1 + (playerManager.GetBallValueUpgrade() * 0.1f);
+    }
 }

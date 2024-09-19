@@ -106,6 +106,19 @@ public class PlayerManager : MonoBehaviour
         player.Coins = FloatSub(player.Coins, amount);
     }
 
+    public int GetBallValueUpgrade()
+    {
+        return player.BallValueUpgrade;
+    }
+    public void SetBallValueUpgrade(int value)
+    {
+        player.BallValueUpgrade = value;
+    }
+    public void AddBallValueUpgrade(int value)
+    {
+        player.BallValueUpgrade += value;
+    }
+
 
     //Speed Functions
     public int GetSpeed()
