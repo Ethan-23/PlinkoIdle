@@ -161,4 +161,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45adac4be44f3884b919f57c47eac9b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ballValue: 1.5
+  baseBallValue: 2

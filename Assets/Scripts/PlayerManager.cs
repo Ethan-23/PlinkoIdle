@@ -18,6 +18,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] GameObject previewBall;
     [SerializeField] Upgrades upgrades;
     [SerializeField] BallController ballController;
+    [SerializeField] BoardManager boardManager;
 
     // Start is called before the first frame update
 
@@ -105,6 +106,24 @@ public class PlayerManager : MonoBehaviour
     {
         player.Coins = FloatSub(player.Coins, amount);
     }
+    public void SetCoins(float amount)
+    {
+        player.Coins = amount;
+    }
+
+    //Diamond Functions
+    public float GetDiamond()
+    {
+        return (float)Math.Round(player.Diamonds, 2);
+    }
+    public void AddDiamonds(float amount)
+    {
+        player.Diamonds = FloatAdd(player.Diamonds, amount);
+    }
+    public void SetDiamonds(float amount)
+    {
+        player.Diamonds = amount;
+    }
 
     public int GetBallValueUpgrade()
     {
@@ -121,15 +140,15 @@ public class PlayerManager : MonoBehaviour
 
 
     //Speed Functions
-    public int GetSpeed()
+    public int GetSpeedUpgrade()
     {
         return player.BallSpeedUpgrade;
     }
-    public void SetSpeed(int amount)
+    public void SetSpeedUpgrade(int amount)
     {
         player.BallSpeedUpgrade = amount;
     }
-    public void AddSpeed(int amount)
+    public void AddSpeedUpgrade(int amount)
     {
         player.BallSpeedUpgrade += amount;
     }
@@ -191,6 +210,20 @@ public class PlayerManager : MonoBehaviour
         player.CooldownUpgrade = amount;
     }
 
+    //Auto Functions
+    public int GetAutoCooldownUpgrade()
+    {
+        return player.AutoCooldownUpgrade;
+    }
+    public void AddAutoCooldownUpgrade(int amount)
+    {
+        player.AutoCooldownUpgrade += amount;
+    }
+    public void SetAutoCooldownUpgrade(int amount)
+    {
+        player.AutoCooldownUpgrade = amount;
+    }
+
     //Base Functions
     public float GetBaseSpeed()
     {
@@ -220,11 +253,21 @@ public class PlayerManager : MonoBehaviour
     //Board Size
     public void SetBoardSize(int size)
     {
+        if (size > 11)
+            return;
         player.BoardSize = size;
+        boardManager.ChangeBoard();
+        ballController.UpdatePaths();
+        PrestigeReset();
     }
     public void AddBoardSize(int size)
     {
+        if (player.BoardSize >= 11)
+            return;
         player.BoardSize += size;
+        boardManager.ChangeBoard();
+        ballController.UpdatePaths();
+        PrestigeReset();
     }
     public int GetBoardSize()
     {
@@ -252,4 +295,16 @@ public class PlayerManager : MonoBehaviour
         return ballController;
     }
 
+    public void PrestigeReset()
+    {
+        player.Prestige += 1;
+        SetCoins(0);
+        SetBallValueUpgrade(0);
+        //SetSpeedUpgrade(0); if I ever get this to work
+        SetBonkerUpgrade(0);
+        SetGlowingBonkerUpgrade(0);
+        SetSpecialBallUpgrade(0);
+        SetCooldownUpgrade(0);
+        SetAutoCooldownUpgrade(0);
+    }
 }

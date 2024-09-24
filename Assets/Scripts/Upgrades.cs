@@ -83,7 +83,7 @@ public class Upgrades : MonoBehaviour
             Debug.LogError("PlayerManager is not assigned or missing in the scene!");
             return 0f; // Fallback value
         }
-        return playerManager.GetBaseAutoCooldownDuration() - (playerManager.GetCooldownUpgrade() * 0.01f);
+        return playerManager.GetBaseAutoCooldownDuration() - (playerManager.GetAutoCooldownUpgrade() * 0.01f);
     }
 
     void BonkerCooldown()

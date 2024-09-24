@@ -11,12 +11,16 @@ public class ShopManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI ballValueAmount;
     [SerializeField] TextMeshProUGUI ballCooldownCost;
     [SerializeField] TextMeshProUGUI ballCooldownAmount;
+    [SerializeField] TextMeshProUGUI autoCooldownCost;
+    [SerializeField] TextMeshProUGUI autoCooldownAmount;
     [SerializeField] TextMeshProUGUI specialBallCost;
     [SerializeField] TextMeshProUGUI specialBallAmount;
     [SerializeField] TextMeshProUGUI bonkerMultiCost;
     [SerializeField] TextMeshProUGUI bonkerMultiAmount;
     [SerializeField] TextMeshProUGUI glowingBonkerCost;
     [SerializeField] TextMeshProUGUI glowingBonkerAmount;
+    [SerializeField] TextMeshProUGUI prestigeBoardCost;
+    [SerializeField] TextMeshProUGUI prestigeBoardAmount;
     // Start is called before the first frame update
     void Start()
     {
@@ -36,12 +40,16 @@ public class ShopManager : MonoBehaviour
         ballValueAmount.text = player.GetBallValueUpgrade().ToString();
         ballCooldownCost.text = "Cost: " + CalculateBallCooldownCost().ToString();
         ballCooldownAmount.text = player.GetCooldownUpgrade().ToString();
+        autoCooldownCost.text = "Cost: " + CalculateAutoCooldownCost().ToString();
+        autoCooldownAmount.text = player.GetAutoCooldownUpgrade().ToString();
         specialBallCost.text = "Cost: " + CalculateSpecialBallCost().ToString();
         specialBallAmount.text = player.GetSpecialBallUpgrade().ToString();
         bonkerMultiCost.text = "Cost: " + CalculateBonkerValue().ToString();
         bonkerMultiAmount.text = player.GetBonkerUpgrade().ToString();
         glowingBonkerCost.text = "Cost: " + CalculateGlowingBonkers().ToString();
         glowingBonkerAmount.text = player.GetGlowingBonkerUpgrade().ToString();
+        prestigeBoardCost.text = "Cost: " + CalculatePrestigeBoard().ToString();
+        prestigeBoardAmount.text = player.GetBoardSize().ToString();
     }
 
     public float CalculateBallValueCost()
@@ -69,6 +77,20 @@ public class ShopManager : MonoBehaviour
             return;
         player.RemoveCoins(CalculateBallCooldownCost());
         player.AddCooldownUpgrade(1);
+        UpdateText();
+    }
+
+    public float CalculateAutoCooldownCost()
+    {
+        return (float)Math.Round(10 * Math.Pow(1.07f, player.GetAutoCooldownUpgrade()), 2);
+    }
+
+    public void PurchaseAutoCooldown()
+    {
+        if (player.GetCoins() < CalculateAutoCooldownCost())
+            return;
+        player.RemoveCoins(CalculateAutoCooldownCost());
+        player.AddAutoCooldownUpgrade(1);
         UpdateText();
     }
 
@@ -111,6 +133,22 @@ public class ShopManager : MonoBehaviour
             return;
         player.RemoveCoins(CalculateGlowingBonkers());
         player.AddGlowingBonkerUpgrade(1);
+        UpdateText();
+    }
+
+    public float CalculatePrestigeBoard()
+    {
+        //return (float)Math.Round(Math.Pow(player.GetBoardSize(), 1.25), 2);
+        return (float)Math.Round(Math.Pow(player.GetBoardSize(), player.GetBoardSize()) * 1000000, 2);
+        //10 ^ 10 * (1000 ^ 2)
+    }
+
+    public void PurchasePrestigeBoard()
+    {
+        if (player.GetCoins() < CalculatePrestigeBoard())
+            return;
+        player.RemoveCoins(CalculatePrestigeBoard());
+        player.AddBoardSize(1);
         UpdateText();
     }
 }

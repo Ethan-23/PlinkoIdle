@@ -102,11 +102,14 @@ public class BallController : MonoBehaviour
     public void UpdatePaths()
     {
         ballSpawns.Clear();
-        //GetPaths();
+        foreach (string val in values)
+            ballSpawns.Add(val, new List<List<Vector2>>());
+        GetPaths();
     }
 
     public void GetPaths()
     {
+        //Debug.Log("Paths Updated");
         List<string> keys = new List<string>();
         for (int i = 0; i < GetMaxMulti(); i++)
         {
