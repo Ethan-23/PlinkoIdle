@@ -35,6 +35,9 @@ public class Player
 
     [Header("Robots")]
     [SerializeField] List<GameObject> botList;
+    [Header("Robot JSON data")]
+    [SerializeField] List<DropBot> dropBotData;
+    [SerializeField] List<MultiplierBot> multiplierBotData;
 
     [Header("Misc")]
     [SerializeField] int boardSize = 1;
@@ -99,10 +102,22 @@ public class Player
         set { glowingBonkersUpgrade = value; }
     }
 
-    public List<GameObject> Botlist
+    public List<GameObject> BotList
     {
         get { return botList; }
         set { botList = value; }
+    }
+
+    public List<DropBot> DropBotData
+    {
+        get { return dropBotData; }
+        set { dropBotData = value; }
+    }
+    
+    public List<MultiplierBot> MultiplierBotData
+    {
+        get { return multiplierBotData; }
+        set { multiplierBotData = value; }
     }
 
     public int BoardSize

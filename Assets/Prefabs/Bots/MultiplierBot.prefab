@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &529264177356708996
+--- !u!1 &5432447716002668166
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,38 +8,38 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8795509017939089319}
-  - component: {fileID: 6823794852715523714}
-  - component: {fileID: 5430319970282099855}
+  - component: {fileID: 2722771249279795077}
+  - component: {fileID: 2584402731355244672}
+  - component: {fileID: -5465529252603769904}
   m_Layer: 0
-  m_Name: DropBot
-  m_TagString: DropBot
+  m_Name: MultiplierBot
+  m_TagString: MultiplierBot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &8795509017939089319
+--- !u!4 &2722771249279795077
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 529264177356708996}
+  m_GameObject: {fileID: 5432447716002668166}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 0}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &6823794852715523714
+--- !u!212 &2584402731355244672
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 529264177356708996}
+  m_GameObject: {fileID: 5432447716002668166}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -74,7 +74,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 3b63c87cf1bcf6e498ad77142dfe8a0d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d92b12812d2d6084b98e4c3131667764, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -85,23 +85,26 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &5430319970282099855
+--- !u!114 &-5465529252603769904
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 529264177356708996}
+  m_GameObject: {fileID: 5432447716002668166}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7e1e89ab9d4cf843bf3cc181e1f7882, type: 3}
+  m_Script: {fileID: 11500000, guid: 1e273a4272793b843a3755031be81141, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   active: 1
-  cooldown: 7
+  speed: 10
+  layer: 1
+  selectedLayer: 1
+  moving: 0
   bot:
-    botType: DropBot
+    botType: MultiplierBot
     level: 1
-    dropSpeedUpgrade: 0
+    moveSpeedUpgrade: 0
     multiplierUpgrade: 0
-    specialBallUpgrade: 0
+    layerUpgrade: 0

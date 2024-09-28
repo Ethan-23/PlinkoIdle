@@ -51,7 +51,7 @@ public class BallController : MonoBehaviour
         }
         else if(playerManager.GetAutoDrop() == true)
         {
-            SpawnBall();
+            SpawnBall(GetRandomBallPath());
         }
         else
         {
@@ -82,14 +82,20 @@ public class BallController : MonoBehaviour
             playerManager.SetAutoDrop(false);
             if (autoSlider.IsActive())
                 autoSlider.gameObject.SetActive(false);
-            SpawnBall();
+            SpawnBall(GetRandomBallPath());
         }
     }
 
-    void SpawnBall()
+    public void SpawnRobotBall(List<Vector2> pathway)
     {
-        Instantiate(upgrades.GetSpawningBall());
+        GameObject spawnedBall = Instantiate(upgrades.GetSpawningBall());
+        spawnedBall.GetComponent<PreviewBall>().SetPath(pathway);
+    }
 
+    void SpawnBall(List<Vector2> pathway)
+    {
+        GameObject spawnedBall = Instantiate(upgrades.GetSpawningBall());
+        spawnedBall.GetComponent<PreviewBall>().SetPath(pathway);
         cooldownTimer = upgrades.GetCooldown();
         autoCooldownTimer = upgrades.GetAutoCooldown();
     }

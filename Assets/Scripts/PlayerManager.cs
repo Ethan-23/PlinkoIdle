@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
@@ -10,20 +11,25 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] float BaseAutoCooldownDuration = 4f;
     [SerializeField] float baseBallSpeed = 50f;
     [SerializeField] bool autoDrop = false;
-    
 
+    [Header("Player Stats")]
     [SerializeField] Player player;
 
     [Header("Objects")]
     [SerializeField] GameObject previewBall;
-    [SerializeField] Upgrades upgrades;
-    [SerializeField] BallController ballController;
-    [SerializeField] BoardManager boardManager;
+    [SerializeField] GameObject dropBot;
+    [SerializeField] GameObject multiplierBot;
+    Upgrades upgrades;
+    BallController ballController;
+    BoardManager boardManager;
 
     // Start is called before the first frame update
 
     private void Awake()
     {
+        upgrades = GetComponent<Upgrades>();
+        ballController = GameObject.Find("BallController").GetComponent<BallController>();
+        boardManager = GameObject.Find("BoardManager").GetComponent<BoardManager>();
         player = new Player();
         player.Coins = 0;
     }
@@ -44,6 +50,21 @@ public class PlayerManager : MonoBehaviour
         {
             Debug.LogWarning("Player instance is null, cannot save data.");
             return;
+        }
+
+        player.DropBotData.Clear();
+        player.MultiplierBotData.Clear();
+
+        foreach (GameObject bot in player.BotList)
+        {
+            if(bot.CompareTag("DropBot"))
+            {
+                player.DropBotData.Add(bot.GetComponent<DropBotFunctionality>().GetBotData());
+            }
+            else if (bot.CompareTag("MultiplierBot"))
+            {
+                player.MultiplierBotData.Add(bot.GetComponent<MultiplierBotFunctionality>().GetBotData());
+            }
         }
 
         try
@@ -83,6 +104,17 @@ public class PlayerManager : MonoBehaviour
             else
             {
                 Debug.Log("Player data loaded from " + path);
+                player.BotList.Clear();
+
+                // Iterate through the bot data list
+                foreach (DropBot botData in player.DropBotData)
+                {
+                    LoadBot(botData);
+                }
+                foreach (MultiplierBot botData in player.MultiplierBotData)
+                {
+                    LoadBot(botData);
+                }
             }
         }
         catch (Exception ex)
@@ -112,7 +144,7 @@ public class PlayerManager : MonoBehaviour
     }
 
     //Diamond Functions
-    public float GetDiamond()
+    public float GetDiamonds()
     {
         return (float)Math.Round(player.Diamonds, 2);
     }
@@ -293,6 +325,41 @@ public class PlayerManager : MonoBehaviour
     public BallController GetBallController()
     {
         return ballController;
+    }
+
+    public void LoadBot(DropBot botData)
+    {
+        GameObject botInstance = Instantiate(dropBot, new Vector3(1.9f, 3.2f, 0), new Quaternion(0, 0, 0, 0));
+
+        // Get the DropBot component on the new instance and set its data
+        botInstance.GetComponent<DropBotFunctionality>().SetBotData(botData);
+        player.BotList.Add(botInstance);
+    }
+
+    public void LoadBot(MultiplierBot botData)
+    {
+        GameObject botInstance = Instantiate(multiplierBot);
+        // Get the DropBot component on the new instance and set its data
+        botInstance.GetComponent<MultiplierBotFunctionality>().SetBotData(botData);
+        player.BotList.Add(botInstance);
+    }
+
+    public void AddDropBot()
+    {
+        //List<GameObject> botlist = player.Botlist;
+        //botlist.Add(gameObject);
+        //player.Botlist = botlist;
+        GameObject tempdropBot = Instantiate(dropBot, new Vector3(1.9f, 3.2f, 0), new Quaternion(0, 0, 0, 0));
+        player.BotList.Add(tempdropBot);
+    }
+
+    public void AddMultiplierBot()
+    {
+        //List<GameObject> botlist = player.Botlist;
+        //botlist.Add(gameObject);
+        //player.Botlist = botlist;
+        GameObject tempMultiplierBot = Instantiate(multiplierBot);
+        player.BotList.Add(tempMultiplierBot);
     }
 
     public void PrestigeReset()

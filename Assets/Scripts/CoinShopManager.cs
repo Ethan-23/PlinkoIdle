@@ -2,7 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 
-public class ShopManager : MonoBehaviour
+public class CoinShopManager : MonoBehaviour
 {
     [SerializeField] PlayerManager player;
     [SerializeField] TextMeshProUGUI coinText;
@@ -24,6 +24,7 @@ public class ShopManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //Run 1 sec after start
         
     }
 

@@ -14,6 +14,8 @@ TagManager:
   - 2x
   - 0.2x
   - Board
+  - DropBot
+  - MultiplierBot
   layers:
   - Default
   - TransparentFX

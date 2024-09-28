@@ -13,6 +13,7 @@ public class MenuButtons : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        coinShop.SetActive(true);
         diamondShop.SetActive(false);
         prestige.SetActive(false);
         settings.SetActive(false);

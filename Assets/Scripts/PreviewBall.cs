@@ -31,17 +31,19 @@ public class PreviewBall : MonoBehaviour
         upgrades = playerManager.gameObject.GetComponent<Upgrades>();
         scoreDisplay = GameObject.Find("ScoreTextDisplay").GetComponent<UIScoreDisplay>();
         speed = playerManager.GetBaseSpeed();
-        path = playerManager.GetBallController().GetRandomBallPath();
+        //path = playerManager.GetBallController().GetRandomBallPath();
         
         //Start position
-        transform.position = path[0];
+        
         /*StartCoroutine(FollowPath());*/
     }
 
-    public void SetBallValue(float amount)
+    public void SetPath(List<Vector2> pathway)
     {
-        baseBallValue = amount;
+        path = pathway;
+        transform.position = path[0];
     }
+
     public float GetBallValue()
     {
         return baseBallValue;
